@@ -8,3 +8,13 @@ C:\Users\user\Desktop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.csproj.Gener
 C:\Users\user\Desktop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.csproj.CoreCompileInputs.cache
 C:\Users\user\Desktop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.exe
 C:\Users\user\Desktop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.pdb
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\bin\Debug\OOP_laba4_1.exe.config
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\bin\Debug\OOP_laba4_1.exe
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\bin\Debug\OOP_laba4_1.pdb
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.csprojAssemblyReference.cache
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.Properties.Resources.resources
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.csproj.GenerateResource.cache
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.exe
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.pdb
+C:\Users\user\Desktop\oop\OOP_laba4_1\OOP_laba4_1\obj\Debug\OOP_laba4_1.Form1.resources
