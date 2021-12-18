@@ -17,6 +17,7 @@ namespace OOP_laba4_1
     {
 		MyStorage myStorage;
 		Graphics g;
+		Color colorForm = Color.Gray; // цвет фона
 
 		public Form1()
         {
@@ -28,6 +29,7 @@ namespace OOP_laba4_1
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
 			g = CreateGraphics();
+			g.Clear(colorForm);
 			myStorage.callShowMethod(g);
 
 		}
@@ -53,11 +55,25 @@ namespace OOP_laba4_1
 			
 
         }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+			if (e.KeyData == Keys.Delete)
+            {
+				myStorage.deleteSelectedObject();
+				g.Clear(colorForm);
+				myStorage.callShowMethod(g);
+			}
+			if (e.Control)
+            {
+				// обработчик события ctrl
+            }
+        }
     }
 
 
 
-	public class CCircle
+    public class CCircle
 	{
 		public int x;
 		public int y;
@@ -98,6 +114,12 @@ namespace OOP_laba4_1
 		public void setSelected()
         {
 			selected = true;
+        }
+
+		// возвращает флаг выбранности круга
+		public bool isSelected()
+        {
+			return selected;
         }
 
 		// функция проверяет кликнул ли пользователь внутрь круга, или нет
@@ -229,13 +251,21 @@ namespace OOP_laba4_1
 			return result;
 		}
 
-
-
-		//удаление объекта с указанной позиции
-		void deleteObject(int position)
-		{
-
-		}
+		//удаляет выбранные объекты
+		public void deleteSelectedObject()
+        {
+			for (int i = 0; i < size; i++)
+            {
+				if (!isEmptyPosition(i))
+                {
+					if (storage[i].isSelected())
+                    {
+						storage[i] = null;
+					}
+				}
+				
+            }
+        }
 
 		//функция проходит по всему массиву и вызывает метод showCircle у всех объектов
 		public void callShowMethod(Graphics g)
