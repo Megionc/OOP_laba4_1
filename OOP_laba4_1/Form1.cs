@@ -28,6 +28,7 @@ namespace OOP_laba4_1
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
 			g = CreateGraphics();
+			myStorage.callShowMethod(g);
 
 		}
 
@@ -36,7 +37,20 @@ namespace OOP_laba4_1
 			Point click;
 			click = e.Location;
 
-			myStorage.setCircle(g, click.X, click.Y);
+			int choiceCircle = myStorage.checkCoord(click.X, click.Y);
+
+			if (choiceCircle == -1)
+            {
+				myStorage.setCircle(g, click.X, click.Y);
+			} else
+            {
+				myStorage.unSelectedObject();
+				myStorage.setSelected(choiceCircle);
+				myStorage.callShowMethod(g);
+			}
+
+
+			
 
         }
     }
@@ -48,30 +62,61 @@ namespace OOP_laba4_1
 		public int x;
 		public int y;
 		public int r;
+		private Pen pen; // цвет контура круга
 		private bool selected; // флаг, выбрал ли объект
 
 		public CCircle(int x, int y)
 		{
-			this.x = x;
-			this.y = y;
 			r = 50;
-			selected = false;
+			this.x = x - r;
+			this.y = y - r;
+			selected = true;
 
 		}
 
 		// функция рисует круг
 		public void showCircle(Graphics g)
 		{
-			Pen blackPen = new Pen(Color.Black, 3);
-			g.DrawEllipse(blackPen, x, y, r+r, r+r);
+			if (selected)
+            {
+				pen = new Pen(Color.Red, 3);
+			} else
+            {
+				pen = new Pen(Color.Black, 3);
+			}
+			
+			g.DrawEllipse(pen, x, y, r+r, r+r);
 		}
+
+		// помечает объект как не выбранный
+		public void unSelected()
+        {
+			selected = false;
+        }
+
+		//делает объект выбранным
+		public void setSelected()
+        {
+			selected = true;
+        }
+
+		// функция проверяет кликнул ли пользователь внутрь круга, или нет
+		// возвращает true - если внутри, false - иначе
+		public bool checkCoord(int x, int y)
+        {
+			int x_center = this.x + r;
+			int y_center = this.y + r;
+
+			double distance = Math.Sqrt((x-x_center) * (x - x_center) + (y - y_center) * (y - y_center));
+
+			return distance <= r;
+        }
 	}
 
 	class MyStorage
 	{
 		private int size;//размер массива
 		private CCircle[] storage;// хранилище
-		private CCircle[] tmp_storage;// временное хранилище
 
 		//конструктор
 		public MyStorage(int size)
@@ -106,19 +151,40 @@ namespace OOP_laba4_1
 			return position;
         }
 
+		// функция проверяет кликнул ли пользователь внутрь какого либо круга, или нет
+		// если "внутрь круга", то возвращается индекс круга
+		// иначе -1
+		public int checkCoord(int x, int y)
+        {
+			int result = -1;
+			for (int i = 0; i< size; i++)
+            {
+				if (!isEmptyPosition(i))
+                {
+					if (storage[i].checkCoord(x, y))
+                    {
+						result = i;
+					}
+				}
+            }
+			return result;
+        }
+
 		//определяет на какую позицию добавить объект в массив
 		public void setCircle(Graphics g, int x, int y)
 		{
 			int emptyPosition = getEmptyPosition();
 			if (emptyPosition == -1) // значит в массиве нет места для создания нового объекта
             {
+				unSelectedObject();
 				setObject(size, new CCircle(x, y));
-				storage[size-1].showCircle(g);
+				callShowMethod(g);
 
 			} else
             {
+				unSelectedObject();
 				setObject(emptyPosition, new CCircle(x, y));
-				storage[emptyPosition].showCircle(g);
+				callShowMethod(g);
 			}
 
 		}
@@ -171,8 +237,8 @@ namespace OOP_laba4_1
 
 		}
 
-		//функция проходит по всему массиву и вызывает метод showClass у всех объектов
-		void callShowMethod(Graphics g)
+		//функция проходит по всему массиву и вызывает метод showCircle у всех объектов
+		public void callShowMethod(Graphics g)
 		{
 			for (int i = 0; i < size; i++)
 			{
@@ -181,6 +247,26 @@ namespace OOP_laba4_1
 					storage[i].showCircle(g);
 				}
 			}
+		}
+
+		// функция делает все объекты не выбранными
+		public void unSelectedObject()
+        {
+			for (int i = 0; i < size; i++)
+			{
+				if (!isEmptyPosition(i))
+				{
+					storage[i].unSelected();
+				}
+			}
+		}
+
+		// функция делает конткретный объект выбранным
+		// принимает позицию объекта который нужно выделить
+		public void setSelected(int i)
+        {
+			storage[i].setSelected();
+
 		}
 	};
 
