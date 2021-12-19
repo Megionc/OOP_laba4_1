@@ -38,22 +38,28 @@ namespace OOP_laba4_1
         {
 			Point click;
 			click = e.Location;
-
 			int choiceCircle = myStorage.checkCoord(click.X, click.Y);
 
-			if (choiceCircle == -1)
+			if (Control.ModifierKeys == Keys.Control)
             {
-				myStorage.setCircle(g, click.X, click.Y);
+				if (choiceCircle != -1) // попадаем в круг
+                {
+					myStorage.setSelected(choiceCircle);
+					myStorage.callShowMethod(g);
+				}
 			} else
             {
-				myStorage.unSelectedObject();
-				myStorage.setSelected(choiceCircle);
-				myStorage.callShowMethod(g);
+				if (choiceCircle != -1) // попадаем в круг
+				{
+					myStorage.unSelectedObject();
+					myStorage.setSelected(choiceCircle);
+					myStorage.callShowMethod(g);
+				}
+				else
+				{
+					myStorage.setCircle(g, click.X, click.Y);
+				}
 			}
-
-
-			
-
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -64,10 +70,6 @@ namespace OOP_laba4_1
 				g.Clear(colorForm);
 				myStorage.callShowMethod(g);
 			}
-			if (e.Control)
-            {
-				// обработчик события ctrl
-            }
         }
     }
 
@@ -291,12 +293,11 @@ namespace OOP_laba4_1
 			}
 		}
 
-		// функция делает конткретный объект выбранным
+		// функция делает конкретный объект выбранным
 		// принимает позицию объекта который нужно выделить
 		public void setSelected(int i)
         {
 			storage[i].setSelected();
-
 		}
 	};
 
