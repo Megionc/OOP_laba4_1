@@ -12,18 +12,17 @@ using System.Windows.Forms;
 namespace OOP_laba4_1
 {
 
-
 	public partial class Form1 : Form
     {
 		MyStorage myStorage;
 		Graphics g;
-		Color colorForm = Color.Gray; // цвет фона
+		Color colorForm = Color.Silver; // цвет фона
 
 		public Form1()
         {
             InitializeComponent();
 			myStorage = new MyStorage(10);
-			
+			Size = new System.Drawing.Size(600, 800); //размер формы
 		}   
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -31,7 +30,6 @@ namespace OOP_laba4_1
 			g = CreateGraphics();
 			g.Clear(colorForm);
 			myStorage.callShowMethod(g);
-
 		}
 
         private void Form1_MouseClick(object sender, MouseEventArgs e)
@@ -47,7 +45,8 @@ namespace OOP_laba4_1
 					myStorage.setSelected(choiceCircle);
 					myStorage.callShowMethod(g);
 				}
-			} else
+			} 
+			else
             {
 				if (choiceCircle != -1) // попадаем в круг
 				{
@@ -57,7 +56,7 @@ namespace OOP_laba4_1
 				}
 				else
 				{
-					myStorage.setCircle(g, click.X, click.Y);
+					myStorage.setCObject(g, new CCircle(click.X, click.Y));
 				}
 			}
         }
@@ -73,27 +72,54 @@ namespace OOP_laba4_1
         }
     }
 
+	public class CObject
+    {
+		public int x, y;
+		public Pen pen; // цвет контура фигуры
+		public bool selected; // флаг, выбрал ли объект
+
+		public virtual void showObject(Graphics g)
+		{}
+
+		public virtual bool checkCoord(int x, int y)
+		{
+			return false;
+		}
+		
+		// помечает объект как не выбранный
+		public void unSelected()
+		{
+			selected = false;
+		}
+
+		//делает объект выбранным
+		public void setSelected()
+		{
+			selected = true;
+		}
+
+		// возвращает флаг выбранности объекта
+		public bool isSelected()
+		{
+			return selected;
+		}
+
+	}
 
 
-    public class CCircle
+	public class CCircle: CObject
 	{
-		public int x;
-		public int y;
 		public int r;
-		private Pen pen; // цвет контура круга
-		private bool selected; // флаг, выбрал ли объект
-
 		public CCircle(int x, int y)
 		{
 			r = 50;
 			this.x = x - r;
 			this.y = y - r;
 			selected = true;
-
 		}
 
 		// функция рисует круг
-		public void showCircle(Graphics g)
+		public override void showObject(Graphics g)
 		{
 			if (selected)
             {
@@ -106,27 +132,9 @@ namespace OOP_laba4_1
 			g.DrawEllipse(pen, x, y, r+r, r+r);
 		}
 
-		// помечает объект как не выбранный
-		public void unSelected()
-        {
-			selected = false;
-        }
-
-		//делает объект выбранным
-		public void setSelected()
-        {
-			selected = true;
-        }
-
-		// возвращает флаг выбранности круга
-		public bool isSelected()
-        {
-			return selected;
-        }
-
 		// функция проверяет кликнул ли пользователь внутрь круга, или нет
 		// возвращает true - если внутри, false - иначе
-		public bool checkCoord(int x, int y)
+		public override bool checkCoord(int x, int y)
         {
 			int x_center = this.x + r;
 			int y_center = this.y + r;
@@ -140,12 +148,12 @@ namespace OOP_laba4_1
 	class MyStorage
 	{
 		private int size;//размер массива
-		private CCircle[] storage;// хранилище
+		private CObject[] storage;// хранилище
 
 		//конструктор
 		public MyStorage(int size)
-		{
-			this.storage = new CCircle[size];
+		{			
+			this.storage = new CObject[size];
 			for (int i = 0; i < size; i++)
 			{
 				this.storage[i] = null;
@@ -163,20 +171,20 @@ namespace OOP_laba4_1
 		// Если такая ячейка найдена, то метод возвращает ее позицию.
 		// Иначе возвращает -1
 		protected int getEmptyPosition()
-        {
+		{
 			int position = -1;
-			for (int i=0; i < size; i ++)
-            {
+			for (int i = 0; i < size; i++)
+			{
 				if (position == -1 && isEmptyPosition(i))
-                {
+				{
 					position = i;
-                }
-            }
+				}
+			}
 			return position;
-        }
+		}
 
-		// функция проверяет кликнул ли пользователь внутрь какого либо круга, или нет
-		// если "внутрь круга", то возвращается индекс круга
+		// функция проверяет кликнул ли пользователь внутрь какого либо объекта, или нет
+		// если "внутрь объекта", то возвращается индекс объекта
 		// иначе -1
 		public int checkCoord(int x, int y)
         {
@@ -185,8 +193,8 @@ namespace OOP_laba4_1
             {
 				if (!isEmptyPosition(i))
                 {
-					if (storage[i].checkCoord(x, y))
-                    {
+					if (((CObject)storage[i]).checkCoord(x, y))
+					{
 						result = i;
 					}
 				}
@@ -195,45 +203,44 @@ namespace OOP_laba4_1
         }
 
 		//определяет на какую позицию добавить объект в массив
-		public void setCircle(Graphics g, int x, int y)
+		public void setCObject(Graphics g, CObject newObj)
 		{
 			int emptyPosition = getEmptyPosition();
 			if (emptyPosition == -1) // значит в массиве нет места для создания нового объекта
             {
 				unSelectedObject();
-				setObject(size, new CCircle(x, y));
+				setObject(size, newObj);
 				callShowMethod(g);
 
 			} else
             {
 				unSelectedObject();
-				setObject(emptyPosition, new CCircle(x, y));
+				setObject(emptyPosition, newObj);
 				callShowMethod(g);
 			}
-
 		}
 
 		// добавить объект на указанную позицию
 		// если хранилище меньше, чем заданная позиция,
 		// то расширяем хранилище
-		void setObject(int position, CCircle circle)
+		void setObject(int position, CObject obj)
 		{
 			if (position < size)
 			{
-				storage[position] = circle;
+				storage[position] = obj;
 			}
 			else
 			{
 				int newSize = position + 1;
 				Array.Resize(ref storage, newSize);
-				storage[position] = circle;
+				storage[position] = obj;
 				this.size = newSize;
 			}
 
 		}
 
 		// получить объект на i-той позиции (без удаления)
-		CCircle getObject(int i)
+		Object getObject(int i)
 		{
 			return storage[i];
 		}
@@ -269,14 +276,14 @@ namespace OOP_laba4_1
             }
         }
 
-		//функция проходит по всему массиву и вызывает метод showCircle у всех объектов
+		//функция проходит по всему массиву и вызывает метод showObject у всех объектов
 		public void callShowMethod(Graphics g)
 		{
 			for (int i = 0; i < size; i++)
 			{
 				if (!isEmptyPosition(i))
 				{
-					storage[i].showCircle(g);
+					storage[i].showObject(g);
 				}
 			}
 		}
@@ -300,9 +307,4 @@ namespace OOP_laba4_1
 			storage[i].setSelected();
 		}
 	};
-
-
-
-
-
 }
