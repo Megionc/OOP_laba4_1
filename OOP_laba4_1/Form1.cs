@@ -36,22 +36,22 @@ namespace OOP_laba4_1
         {
 			Point click;
 			click = e.Location;
-			int choiceCircle = myStorage.checkCoord(click.X, click.Y);
+			int choiceObject = myStorage.checkCoord(click.X, click.Y);
 
 			if (Control.ModifierKeys == Keys.Control)
             {
-				if (choiceCircle != -1) // попадаем в круг
+				if (choiceObject != -1) // попадаем в объект
                 {
-					myStorage.setSelected(choiceCircle);
+					myStorage.setSelected(choiceObject);
 					myStorage.callShowMethod(g);
 				}
 			} 
 			else
             {
-				if (choiceCircle != -1) // попадаем в круг
+				if (choiceObject != -1) // попадаем в объект
 				{
 					myStorage.unSelectedObject();
-					myStorage.setSelected(choiceCircle);
+					myStorage.setSelected(choiceObject);
 					myStorage.callShowMethod(g);
 				}
 				else
